@@ -9,41 +9,41 @@ build_property.EnforceExtendedAnalyzerRules =
 build_property._SupportedPlatformList = browser
 build_property.RootNamespace = FinanzApp.Client
 build_property.RootNamespace = FinanzApp.Client
-build_property.ProjectDir = C:\Aplicada\FinanzApp\Client\
+build_property.ProjectDir = c:\Aplicada\FinanzApp\Client\
 build_property.RazorLangVersion = 7.0
 build_property.SupportLocalizedComponentNames = 
 build_property.GenerateRazorMetadataSourceChecksumAttributes = 
-build_property.MSBuildProjectDirectory = C:\Aplicada\FinanzApp\Client
+build_property.MSBuildProjectDirectory = c:\Aplicada\FinanzApp\Client
 build_property._RazorSourceGeneratorDebug = 
 
-[C:/Aplicada/FinanzApp/Client/App.razor]
+[c:/Aplicada/FinanzApp/Client/App.razor]
 build_metadata.AdditionalFiles.TargetPath = QXBwLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Aplicada/FinanzApp/Client/Pages/Index.razor]
+[c:/Aplicada/FinanzApp/Client/Pages/Index.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSW5kZXgucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Aplicada/FinanzApp/Client/Pages/Registros/R_Gastos.razor]
+[c:/Aplicada/FinanzApp/Client/Pages/Registros/R_Gastos.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUmVnaXN0cm9zXFJfR2FzdG9zLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Aplicada/FinanzApp/Client/Pages/Registros/R_Ingresos.razor]
+[c:/Aplicada/FinanzApp/Client/Pages/Registros/R_Ingresos.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUmVnaXN0cm9zXFJfSW5ncmVzb3MucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Aplicada/FinanzApp/Client/Shared/SurveyPrompt.razor]
+[c:/Aplicada/FinanzApp/Client/Shared/SurveyPrompt.razor]
 build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXFN1cnZleVByb21wdC5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Aplicada/FinanzApp/Client/_Imports.razor]
+[c:/Aplicada/FinanzApp/Client/_Imports.razor]
 build_metadata.AdditionalFiles.TargetPath = X0ltcG9ydHMucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Aplicada/FinanzApp/Client/Shared/MainLayout.razor]
+[c:/Aplicada/FinanzApp/Client/Shared/MainLayout.razor]
 build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXE1haW5MYXlvdXQucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = b-qvpu8fosws
 
-[C:/Aplicada/FinanzApp/Client/Shared/NavMenu.razor]
+[c:/Aplicada/FinanzApp/Client/Shared/NavMenu.razor]
 build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXE5hdk1lbnUucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = b-yotjujkgrh
