@@ -7,6 +7,6 @@ public class Usuarios
     public string? Correo { get; set; }
     public string? Contrasena { get; set; }
     public decimal SaldoTotal { get; set; }
-    public List<MetaAhorros>? L_MetasAhorro { get; set; }
+    public List<Ahorros>? L_Ahorro { get; set; }
    
 }

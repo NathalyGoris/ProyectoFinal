@@ -1,6 +1,6 @@
 using Radzen;
 
-    public static class Notificaciones
+    public static class NotificacionService
     {
         public static void ShowNotification(this NotificationService notifier,
             string titulo,

@@ -16,32 +16,26 @@ namespace FinanzApp.Server.Migrations
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "7.0.9");
 
-            modelBuilder.Entity("CategoriaGastos", b =>
+            modelBuilder.Entity("Ahorros", b =>
                 {
-                    b.Property<int>("ID")
+                    b.Property<int>("AhorroId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("Nombre")
+                    b.Property<DateTime>("FechaLimite")
                         .HasColumnType("TEXT");
 
-                    b.HasKey("ID");
+                    b.Property<decimal>("MontoObjetivo")
+                        .HasColumnType("TEXT");
 
-                    b.ToTable("CategoriaGastos");
-                });
-
-            modelBuilder.Entity("CategoriaIngresos", b =>
-                {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd()
+                    b.Property<int?>("UsuarioID")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("Nombre")
-                        .HasColumnType("TEXT");
+                    b.HasKey("AhorroId");
 
-                    b.HasKey("ID");
+                    b.HasIndex("UsuarioID");
 
-                    b.ToTable("CategoriaIngresos");
+                    b.ToTable("Ahorros");
                 });
 
             modelBuilder.Entity("CuentasBancarias", b =>
@@ -71,26 +65,32 @@ namespace FinanzApp.Server.Migrations
                     b.ToTable("cuentasBancarias");
                 });
 
-            modelBuilder.Entity("MetaAhorros", b =>
+            modelBuilder.Entity("Gastos", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("GastosId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<DateTime>("FechaLimite")
+                    b.Property<string>("Nombre")
                         .HasColumnType("TEXT");
 
-                    b.Property<decimal>("MontoObjetivo")
-                        .HasColumnType("TEXT");
+                    b.HasKey("GastosId");
 
-                    b.Property<int?>("UsuarioID")
+                    b.ToTable("Gastos");
+                });
+
+            modelBuilder.Entity("Ingresos", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.HasKey("Id");
+                    b.Property<string>("Nombre")
+                        .HasColumnType("TEXT");
 
-                    b.HasIndex("UsuarioID");
+                    b.HasKey("ID");
 
-                    b.ToTable("MetaAhorros");
+                    b.ToTable("Ingresos");
                 });
 
             modelBuilder.Entity("Transacciones", b =>
@@ -146,6 +146,15 @@ namespace FinanzApp.Server.Migrations
                     b.ToTable("Usuarios");
                 });
 
+            modelBuilder.Entity("Ahorros", b =>
+                {
+                    b.HasOne("Usuarios", "Usuario")
+                        .WithMany("L_Ahorro")
+                        .HasForeignKey("UsuarioID");
+
+                    b.Navigation("Usuario");
+                });
+
             modelBuilder.Entity("CuentasBancarias", b =>
                 {
                     b.HasOne("Usuarios", "Usuario")
@@ -155,18 +164,9 @@ namespace FinanzApp.Server.Migrations
                     b.Navigation("Usuario");
                 });
 
-            modelBuilder.Entity("MetaAhorros", b =>
-                {
-                    b.HasOne("Usuarios", "Usuario")
-                        .WithMany("L_MetasAhorro")
-                        .HasForeignKey("UsuarioID");
-
-                    b.Navigation("Usuario");
-                });
-
             modelBuilder.Entity("Transacciones", b =>
                 {
-                    b.HasOne("CategoriaGastos", "Categoria")
+                    b.HasOne("Ingresos", "Categoria")
                         .WithMany()
                         .HasForeignKey("CategoriaID");
 
@@ -181,7 +181,7 @@ namespace FinanzApp.Server.Migrations
 
             modelBuilder.Entity("Usuarios", b =>
                 {
-                    b.Navigation("L_MetasAhorro");
+                    b.Navigation("L_Ahorro");
                 });
 #pragma warning restore 612, 618
         }

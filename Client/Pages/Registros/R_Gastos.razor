@@ -1,0 +1,162 @@
+@page "/registro-gasto"
+@page "/registro-gasto/{GastoId:int}"
+@inject HttpClient httpClient
+@inject NotificationService notificationServices
+
+
+<h3 class="text-primary">Registro de Gasto</h3>
+
+<EditForm Model="nuevaTransaccion" OnValidSubmit="RegistrarGasto">
+    <DataAnnotationsValidator />
+
+    <div class="form-group">
+        <label for="Fecha" class="text-muted">Fecha:</label>
+        <InputDate id="Fecha" @bind-Value="nuevaTransaccion.Fecha" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label for="Monto" class="text-muted">Monto:</label>
+        <InputNumber id="Monto" @bind-Value="nuevaTransaccion.Monto" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label for="Descripcion" class="text-muted">Descripción:</label>
+        <InputText id="Descripcion" @bind-Value="nuevaTransaccion.Descripcion" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label for="Usuario" class="text-muted">Usuario:</label>
+        <InputSelect id="Usuario" @bind-Value="nuevaTransaccion.Usuario" class="form-control">
+            @foreach (var usuario in usuarios)
+            {
+                <option value="@usuario">@usuario.Nombre</option>
+            }
+        </InputSelect>
+    </div>
+    <div class="form-group">
+        <label for="Categoria" class="text-muted">Categoría:</label>
+        <InputSelect id="Categoria" @bind-Value="nuevaTransaccion.Categoria" class="form-control">
+            @foreach (var categoria in Categoriagasto)
+            {
+                <option value="@categoria">@categoria.Nombre</option>
+            }
+        </InputSelect>
+    </div>
+            <div class="card-footer d-flex justify-content-center">
+                <div class="btn-group">
+                    <button type="button" class="btn btn-outline-primary" @onclick="Nuevo">Nuevo <i class="oi oi-file" /></button>
+                    <button type="submit" class="btn btn-outline-success">Guardar <i class="oi oi-document" /></button>
+                    <button type="button" class="btn btn-outline-danger" @onclick="Eliminar">Eliminar <i class="oi oi-trash" /></button>
+                </div>
+            </div>
+</EditForm>
+
+@code {
+    // P
+    [Parameter]
+
+    public int GastoId { get; set; }
+
+    public Gastos gastos { get; set; } = new Gastos(); 
+    private Transacciones nuevaTransaccion = new Transacciones();
+    public string Mensaje { get; set; } = string.Empty;
+    private List<Usuarios> usuarios = new List<Usuarios>(); // Supongamos que tienes una lista de usuarios
+    private List<Gastos> Categoriagasto = new List<Gastos>(); // Supongamos que tienes una lista de categorías
+
+    // Método para registrar el gasto
+    private void RegistrarGasto()
+    {
+        // Aquí puedes agregar la lógica para guardar la nuevaTransaccion como un gasto en la base de datos o repositorio
+        // Por ejemplo, podrías usar una llamada a una API o un servicio para realizar el registro
+
+        // Una vez que se ha guardado el gasto, puedes redirigir al usuario a otra página o realizar otras acciones necesarias
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        if(GastoId>0)
+        {
+            this.gastos.GastosId = GastoId;
+            await Buscar();
+        }
+        // Carga de datos ficticios para listaUsuarios y listaCategorias
+        usuarios = new List<Usuarios>
+        {
+            new Usuarios { ID = 1, Nombre = "Usuario1" },
+            new Usuarios { ID = 2, Nombre = "Usuario2" },
+            new Usuarios { ID = 3, Nombre = "Usuario3" }
+        };
+
+        Categoriagasto = new List<Gastos>
+        {
+            new Gastos { GastosId = 1, Nombre = "Alimentos" },
+            new Gastos { GastosId = 2, Nombre = "Transporte" },
+            new Gastos { GastosId = 3, Nombre = "Entretenimiento" }
+        };
+    }
+
+    
+    public async Task Buscar()
+    {
+        var buscar = await httpClient.GetFromJsonAsync<Gastos>($"api/Gastos/{gastos.GastosId}");
+        {
+            if (buscar != null)
+            {
+                this.gastos = buscar;
+                StateHasChanged();
+            }
+            else
+            {
+                    notificationServices.ShowNotification(
+                    titulo: "Error de búsqueda",
+                    mensaje: "Registro no encontrado",
+                    NotificationSeverity.Error
+                );
+            }
+        }
+    }
+
+    public bool Validar()
+    {
+        return !string.IsNullOrEmpty(gastos.Nombre)
+        && gastos.GastosId >= 0;
+    }
+
+    public async void Guardar()
+    {
+        using var error = await httpClient.PostAsJsonAsync<Gastos>("api/Gastos", gastos);
+        if (!error.IsSuccessStatusCode)
+        {   
+                notificationServices.ShowNotification(
+                titulo: "error",
+                mensaje: "El Registro no se guardo",
+                NotificationSeverity.Error
+            );
+            return;
+        }
+        var exito = await error.Content.ReadFromJsonAsync<Gastos>();
+        if (exito is not null)
+        {
+            this.gastos = exito;
+            StateHasChanged();
+                notificationServices.ShowNotification(
+                titulo: "Exito",
+                mensaje: "Registro guardado",
+                NotificationSeverity.Success
+            );
+        }
+    }
+    public void Nuevo()
+    {
+        this.gastos = new Gastos();
+        Mensaje = string.Empty;
+    }
+    public async Task Eliminar()
+    {
+        using var response = await httpClient.DeleteAsync($"api/Gastos/{gastos.GastosId}");
+        if (!response.IsSuccessStatusCode)
+        {
+            Mensaje = response.ReasonPhrase ?? "error";
+            return;
+        }
+        else
+            Nuevo();
+    }
+}
