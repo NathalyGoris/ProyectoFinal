@@ -1,7 +1,5 @@
 using System.ComponentModel.DataAnnotations;
-public class Ingresos
+public class Ingresos : Transacciones
 {
-    [Key]
-    public int ID { get; set; }
-    public string? Nombre { get; set; }
+    public List<Transacciones> Transacciones { get; set; } = new List<Transacciones>();
 }

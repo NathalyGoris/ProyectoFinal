@@ -1,81 +1,145 @@
 @page "/registro-ingresos"
+@page "/registro-ingresos/{IngresoId:int}"
+@inject HttpClient httpClient
+@inject NotificationService notificationServices
+
 
 <h3 class="text-primary">Registro de Ingresos</h3>
 
-<EditForm Model="nuevoIngreso" OnValidSubmit="RegistrarIngreso">
+<EditForm Model="nuevaTransaccion" OnValidSubmit="RegistrarIngreso">
     <DataAnnotationsValidator />
-
+    <div class="col-md-6">
+        <label>ID</label>
+            <div class="input-group">
+                <InputNumber @bind-Value="ingresos.TransaccionId" class="form-control" />
+                <button type="button" class="btn btn-outline-primary oi oi-magnifying-glass" @onclick="Buscar"></button>
+            </div>
+    </div>
     <div class="form-group">
         <label for="Fecha" class="text-muted">Fecha:</label>
-        <InputDate id="Fecha" @bind-Value="nuevoIngreso.Fecha" class="form-control" />
-        <ValidationMessage For="@(() => nuevoIngreso.Fecha)" />
+        <InputDate id="Fecha" @bind-Value="nuevaTransaccion.Fecha" class="form-control" />
     </div>
     <div class="form-group">
         <label for="Monto" class="text-muted">Monto:</label>
-        <InputNumber id="Monto" @bind-Value="nuevoIngreso.Monto" class="form-control" />
-        <ValidationMessage For="@(() => nuevoIngreso.Monto)" />
-    </div>
-    <div class="form-group">
-        <label for="Descripcion" class="text-muted">Descripción:</label>
-        <InputText id="Descripcion" @bind-Value="nuevoIngreso.Descripcion" class="form-control" />
-        <ValidationMessage For="@(() => nuevoIngreso.Descripcion)" />
-    </div>
-    <div class="form-group">
-        <label for="Usuario" class="text-muted">Usuario:</label>
-        <InputSelect id="Usuario" @bind-Value="nuevoIngreso.Usuario" class="form-control">
-            @foreach (var usuario in listaUsuarios)
-            {
-                <option value="@usuario">@usuario.Nombre</option>
-            }
-        </InputSelect>
-        <ValidationMessage For="@(() => nuevoIngreso.Usuario)" />
+        <InputNumber id="Monto" @bind-Value="nuevaTransaccion.Monto" class="form-control" />
     </div>
     <div class="form-group">
         <label for="Categoria" class="text-muted">Categoría:</label>
-        <InputSelect id="Categoria" @bind-Value="nuevoIngreso.Categoria" class="form-control">
-            @foreach (var categoria in listaCategorias)
+        <InputSelect id="Categoria" @bind-Value="nuevaTransaccion.Categoria" class="form-control">
+            @foreach (var categoria in CategoriaIngresos)
             {
-                <option value="@categoria">@categoria.Nombre</option>
+                <option value="@categoria">@categoria.Descripcion</option>
             }
         </InputSelect>
-        <ValidationMessage For="@(() => nuevoIngreso.Categoria)" />
     </div>
-
-    <div class="d-flex justify-content-end mt-4">
-        <button type="submit" class="btn btn-primary">Registrar Ingreso</button>
+    <div class="form-group">
+        <label for="Descripcion" class="text-muted">Descripción:</label>
+        <InputText id="Descripcion" @bind-Value="nuevaTransaccion.Descripcion" class="form-control" />
+    </div>    
+    <div class="card-footer d-flex justify-content-center">
+        <div class="btn-group">
+            <button type="button" class="btn btn-outline-primary" @onclick="Nuevo">Nuevo <i class="oi oi-file" /></button>
+            <button type="submit" class="btn btn-outline-success">Guardar <i class="oi oi-document" /></button>
+            <button type="button" class="btn btn-outline-danger" @onclick="Eliminar">Eliminar <i class="oi oi-trash" /></button>
+        </div>
     </div>
 </EditForm>
 
 @code {
-    // Propiedad para el nuevo ingreso
-    private Transacciones nuevoIngreso = new Transacciones();
-    private List<Usuarios> listaUsuarios = new List<Usuarios>(); // Supongamos que tienes una lista de usuarios
-    private List<Ingresos> listaCategorias = new List<Ingresos>(); // Supongamos que tienes una lista de categorías
+    // P
+    [Parameter]
 
-    // Método para registrar el ingreso
+    public int IngresoId { get; set; }
+    public Ingresos ingresos { get; set; } = new Ingresos(); 
+    private Transacciones nuevaTransaccion = new Transacciones();
+    public string Mensaje { get; set; } = string.Empty;
+    private List<Ingresos> CategoriaIngresos = new List<Ingresos>(); 
     private void RegistrarIngreso()
     {
-        // Aquí puedes agregar la lógica para guardar el nuevoIngreso como un ingreso en la base de datos o repositorio
-        // Por ejemplo, podrías usar una llamada a una API o un servicio para realizar el registro
-
-        // Una vez que se ha guardado el ingreso, puedes redirigir al usuario a otra página o realizar otras acciones necesarias
+        
     }
 
     protected override async Task OnInitializedAsync()
     {
-        // Carga de datos ficticios para listaUsuarios y listaCategorias
-        listaUsuarios = new List<Usuarios>
+        if(IngresoId>0)
         {
-            new Usuarios { ID = 1, Nombre = "Usuario1" },
-            new Usuarios { ID = 2, Nombre = "Usuario2" },
-            new Usuarios { ID = 3, Nombre = "Usuario3" }
-        };
+            this.ingresos.TransaccionId = IngresoId;
+            await Buscar();
+        }
 
-        listaCategorias = new List<Ingresos>
+        CategoriaIngresos = new List<Ingresos>
         {
-            new Ingresos { ID = 1, Nombre = "Alimentos" },
-            new Ingresos { ID = 2, Nombre = "Transporte" },
-            new Ingresos { ID = 3, Nombre = "Entretenimiento" }
-        };
+            new Ingresos { TransaccionId = 1, Descripcion = "Deposito" },
+            new Ingresos { TransaccionId = 2, Descripcion = "Sueldo" },
+            new Ingresos { TransaccionId = 3, Descripcion = "Ahorros" }
+          };
+    }
+
+    
+    public async Task Buscar()
+    {
+        var buscar = await httpClient.GetFromJsonAsync<Ingresos>($"api/Ingresos/{ingresos.TransaccionId}");
+        {
+            if (buscar != null)
+            {
+                this.ingresos = buscar;
+                StateHasChanged();
+            }
+            else
+            {
+                    notificationServices.ShowNotification(
+                    titulo: "Error de búsqueda",
+                    mensaje: "Registro no encontrado",
+                    NotificationSeverity.Error
+                );
+            }
+        }
+    }
+
+    public bool Validar()
+    {
+        return !string.IsNullOrEmpty(ingresos.Descripcion)
+        && ingresos.TransaccionId >= 0;
+    }
+
+    public async void Guardar()
+    {
+        using var error = await httpClient.PostAsJsonAsync<Ingresos>("api/Gastos", ingresos);
+        if (!error.IsSuccessStatusCode)
+        {   
+                notificationServices.ShowNotification(
+                titulo: "error",
+                mensaje: "El Registro no se guardo",
+                NotificationSeverity.Error
+            );
+            return;
+        }
+        var exito = await error.Content.ReadFromJsonAsync<Ingresos>();
+        if (exito is not null)
+        {
+            this.ingresos = exito;
+            StateHasChanged();
+                notificationServices.ShowNotification(
+                titulo: "Exito",
+                mensaje: "Registro guardado",
+                NotificationSeverity.Success
+            );
+        }
+    }
+    public void Nuevo()
+    {
+        this.ingresos = new Ingresos();
+        Mensaje = string.Empty;
+    }
+    public async Task Eliminar()
+    {
+        using var response = await httpClient.DeleteAsync($"api/Ingresos/{ingresos.TransaccionId}");
+        if (!response.IsSuccessStatusCode)
+        {
+            Mensaje = response.ReasonPhrase ?? "error";
+            return;
+        }
+        else
+            Nuevo();
     }
 }

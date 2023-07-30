@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 public class Transacciones
 {
     [Key]
-    public int Id { get; set; }
+    public int TransaccionId { get; set; }
     
     [Required(ErrorMessage = "La fecha es obligatoria.")]
     public DateTime Fecha { get; set; } = DateTime.Now;

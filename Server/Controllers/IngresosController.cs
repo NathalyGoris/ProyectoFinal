@@ -43,7 +43,7 @@ namespace FinanzApp.Controllers
         [HttpPost]
         public async Task<ActionResult<Ingresos>> PostIngresos(Ingresos ingresos)
         {
-            if (!IngresosExists(ingresos.ID))
+            if (!IngresosExists(ingresos.TransaccionId))
                 _context.Ingresos.Add(ingresos);
             else
                 _context.Ingresos.Update(ingresos);
@@ -73,7 +73,7 @@ namespace FinanzApp.Controllers
 
         private bool IngresosExists(int id)
         {
-            return (_context.Ingresos?.Any(e => e.ID == id)).GetValueOrDefault();
+            return (_context.Ingresos?.Any(e => e.TransaccionId == id)).GetValueOrDefault();
         }
     }
 }

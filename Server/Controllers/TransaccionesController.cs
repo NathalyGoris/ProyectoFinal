@@ -22,7 +22,7 @@ namespace FinanzApp.Controllers
         [HttpGet("{id}")]
         public ActionResult<Transacciones> GetTransaccion(int id)
         {
-            var transaccion = transacciones.FirstOrDefault(t => t.Id == id);
+            var transaccion = transacciones.FirstOrDefault(t => t.TransaccionId == id);
             if (transaccion == null)
             {
                 return NotFound(); // Devuelve 404 si no se encuentra la transacción
@@ -40,22 +40,22 @@ namespace FinanzApp.Controllers
             }
 
             // Genera un nuevo ID para la transacción
-            transaccion.Id = transacciones.Count + 1;
+            transaccion.TransaccionId = transacciones.Count + 1;
             transacciones.Add(transaccion);
 
-            return CreatedAtAction(nameof(GetTransaccion), new { id = transaccion.Id }, transaccion);
+            return CreatedAtAction(nameof(GetTransaccion), new { id = transaccion.TransaccionId }, transaccion);
         }
 
         // PUT: api/transacciones/5
         [HttpPut("{id}")]
         public IActionResult PutTransaccion(int id, Transacciones transaccion)
         {
-            if (id != transaccion.Id)
+            if (id != transaccion.TransaccionId)
             {
                 return BadRequest(); // Devuelve 400 si el ID proporcionado no coincide con el ID de la transacción
             }
 
-            var existingTransaccion = transacciones.FirstOrDefault(t => t.Id == id);
+            var existingTransaccion = transacciones.FirstOrDefault(t => t.TransaccionId == id);
             if (existingTransaccion == null)
             {
                 return NotFound(); // Devuelve 404 si no se encuentra la transacción
@@ -75,7 +75,7 @@ namespace FinanzApp.Controllers
         [HttpDelete("{id}")]
         public IActionResult DeleteTransaccion(int id)
         {
-            var transaccion = transacciones.FirstOrDefault(t => t.Id == id);
+            var transaccion = transacciones.FirstOrDefault(t => t.TransaccionId == id);
             if (transaccion == null)
             {
                 return NotFound(); // Devuelve 404 si no se encuentra la transacción

@@ -12,7 +12,8 @@ namespace FinanzApp.Controllers
         public GastosController(Context context)
         {
             _context = context;
-        }
+        }         
+        
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Gastos>>> GetGastos()
         {
@@ -24,14 +25,14 @@ namespace FinanzApp.Controllers
         }
 
 
-         [HttpGet("{GastosId}")]
-        public async Task<ActionResult<Gastos>> GetGastos(int id)
+         [HttpGet("{TransaccionId}")]
+        public async Task<ActionResult<Gastos>> Obtener(int TransaccionId)
         {
             if (_context.Gastos == null)
             {
                 return NotFound();
             }
-            var gastos = await _context.Gastos.FindAsync(id);
+            var gastos = await _context.Gastos.FindAsync(TransaccionId);
 
             if (gastos == null)
             {
@@ -42,30 +43,27 @@ namespace FinanzApp.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<Gastos>> PostEntradas(Gastos gastos)
+        public async Task<ActionResult<Gastos>> PostIngresos(Gastos gastos)
         {
-            if(!Existe(gastos.GastosId))
-            {
+            if (!Existe(gastos.TransaccionId))
                 _context.Gastos.Add(gastos);
-            }
             else
-            {
                 _context.Gastos.Update(gastos);
-            }
 
             await _context.SaveChangesAsync();
             return Ok(gastos);
         }
 
+
         [HttpDelete("{GastosId}")]
-        public async Task<IActionResult> EliminarGasto(int GastosId)
+        public async Task<IActionResult> EliminarGasto(int TransaccionId)
         {
             if(_context.Gastos == null)
             {
                 return NotFound();
             }
 
-            var gasto = await _context.Gastos.FindAsync(GastosId);
+            var gasto = await _context.Gastos.FindAsync(TransaccionId);
 
             if(gasto == null)
             {
@@ -79,7 +77,7 @@ namespace FinanzApp.Controllers
 
         private bool Existe(int id)
         {
-            return (_context.Gastos?.Any(e => e.GastosId == id)).GetValueOrDefault();
+            return (_context.Gastos?.Any(e => e.TransaccionId == id)).GetValueOrDefault();
         }
     }
 }

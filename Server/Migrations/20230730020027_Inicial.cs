@@ -12,32 +12,6 @@ namespace FinanzApp.Server.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Gastos",
-                columns: table => new
-                {
-                    GastosId = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    Nombre = table.Column<string>(type: "TEXT", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Gastos", x => x.GastosId);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Ingresos",
-                columns: table => new
-                {
-                    ID = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    Nombre = table.Column<string>(type: "TEXT", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Ingresos", x => x.ID);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Usuarios",
                 columns: table => new
                 {
@@ -98,22 +72,29 @@ namespace FinanzApp.Server.Migrations
                 name: "Transacciones",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                    TransaccionId = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     Fecha = table.Column<DateTime>(type: "TEXT", nullable: false),
                     Monto = table.Column<decimal>(type: "TEXT", nullable: false),
-                    Descripcion = table.Column<string>(type: "TEXT", nullable: true),
+                    Descripcion = table.Column<string>(type: "TEXT", nullable: false),
                     UsuarioID = table.Column<int>(type: "INTEGER", nullable: true),
-                    CategoriaID = table.Column<int>(type: "INTEGER", nullable: true)
+                    CategoriaTransaccionId = table.Column<int>(type: "INTEGER", nullable: true),
+                    Discriminator = table.Column<string>(type: "TEXT", nullable: false),
+                    GastosTransaccionId = table.Column<int>(type: "INTEGER", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Transacciones", x => x.Id);
+                    table.PrimaryKey("PK_Transacciones", x => x.TransaccionId);
                     table.ForeignKey(
-                        name: "FK_Transacciones_Ingresos_CategoriaID",
-                        column: x => x.CategoriaID,
-                        principalTable: "Ingresos",
-                        principalColumn: "ID");
+                        name: "FK_Transacciones_Transacciones_CategoriaTransaccionId",
+                        column: x => x.CategoriaTransaccionId,
+                        principalTable: "Transacciones",
+                        principalColumn: "TransaccionId");
+                    table.ForeignKey(
+                        name: "FK_Transacciones_Transacciones_GastosTransaccionId",
+                        column: x => x.GastosTransaccionId,
+                        principalTable: "Transacciones",
+                        principalColumn: "TransaccionId");
                     table.ForeignKey(
                         name: "FK_Transacciones_Usuarios_UsuarioID",
                         column: x => x.UsuarioID,
@@ -132,9 +113,14 @@ namespace FinanzApp.Server.Migrations
                 column: "UsuarioID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Transacciones_CategoriaID",
+                name: "IX_Transacciones_CategoriaTransaccionId",
                 table: "Transacciones",
-                column: "CategoriaID");
+                column: "CategoriaTransaccionId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Transacciones_GastosTransaccionId",
+                table: "Transacciones",
+                column: "GastosTransaccionId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Transacciones_UsuarioID",
@@ -152,13 +138,7 @@ namespace FinanzApp.Server.Migrations
                 name: "cuentasBancarias");
 
             migrationBuilder.DropTable(
-                name: "Gastos");
-
-            migrationBuilder.DropTable(
                 name: "Transacciones");
-
-            migrationBuilder.DropTable(
-                name: "Ingresos");
 
             migrationBuilder.DropTable(
                 name: "Usuarios");

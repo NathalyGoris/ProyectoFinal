@@ -65,48 +65,28 @@ namespace FinanzApp.Server.Migrations
                     b.ToTable("cuentasBancarias");
                 });
 
-            modelBuilder.Entity("Gastos", b =>
-                {
-                    b.Property<int>("GastosId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Nombre")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("GastosId");
-
-                    b.ToTable("Gastos");
-                });
-
-            modelBuilder.Entity("Ingresos", b =>
-                {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Nombre")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("ID");
-
-                    b.ToTable("Ingresos");
-                });
-
             modelBuilder.Entity("Transacciones", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("TransaccionId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("CategoriaID")
+                    b.Property<int?>("CategoriaTransaccionId")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Descripcion")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("Fecha")
                         .HasColumnType("TEXT");
+
+                    b.Property<int?>("GastosTransaccionId")
+                        .HasColumnType("INTEGER");
 
                     b.Property<decimal>("Monto")
                         .HasColumnType("TEXT");
@@ -114,13 +94,19 @@ namespace FinanzApp.Server.Migrations
                     b.Property<int?>("UsuarioID")
                         .HasColumnType("INTEGER");
 
-                    b.HasKey("Id");
+                    b.HasKey("TransaccionId");
 
-                    b.HasIndex("CategoriaID");
+                    b.HasIndex("CategoriaTransaccionId");
+
+                    b.HasIndex("GastosTransaccionId");
 
                     b.HasIndex("UsuarioID");
 
                     b.ToTable("Transacciones");
+
+                    b.HasDiscriminator<string>("Discriminator").HasValue("Transacciones");
+
+                    b.UseTphMappingStrategy();
                 });
 
             modelBuilder.Entity("Usuarios", b =>
@@ -146,6 +132,20 @@ namespace FinanzApp.Server.Migrations
                     b.ToTable("Usuarios");
                 });
 
+            modelBuilder.Entity("Gastos", b =>
+                {
+                    b.HasBaseType("Transacciones");
+
+                    b.HasDiscriminator().HasValue("Gastos");
+                });
+
+            modelBuilder.Entity("Ingresos", b =>
+                {
+                    b.HasBaseType("Transacciones");
+
+                    b.HasDiscriminator().HasValue("Ingresos");
+                });
+
             modelBuilder.Entity("Ahorros", b =>
                 {
                     b.HasOne("Usuarios", "Usuario")
@@ -167,8 +167,12 @@ namespace FinanzApp.Server.Migrations
             modelBuilder.Entity("Transacciones", b =>
                 {
                     b.HasOne("Ingresos", "Categoria")
-                        .WithMany()
-                        .HasForeignKey("CategoriaID");
+                        .WithMany("Transacciones")
+                        .HasForeignKey("CategoriaTransaccionId");
+
+                    b.HasOne("Gastos", null)
+                        .WithMany("Transacciones")
+                        .HasForeignKey("GastosTransaccionId");
 
                     b.HasOne("Usuarios", "Usuario")
                         .WithMany()
@@ -182,6 +186,16 @@ namespace FinanzApp.Server.Migrations
             modelBuilder.Entity("Usuarios", b =>
                 {
                     b.Navigation("L_Ahorro");
+                });
+
+            modelBuilder.Entity("Gastos", b =>
+                {
+                    b.Navigation("Transacciones");
+                });
+
+            modelBuilder.Entity("Ingresos", b =>
+                {
+                    b.Navigation("Transacciones");
                 });
 #pragma warning restore 612, 618
         }
